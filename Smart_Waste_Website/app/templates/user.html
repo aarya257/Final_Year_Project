@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Dashboard • Smart Waste</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#f8fafc',
+            primary: '#0ea5a4',
+            success: '#22c55e',
+            danger: '#ef4444',
+            info: '#38bdf8',
+            skip: '#facc15',
+            muted: '#64748b',
+            card: 'rgba(255,255,255,0.95)'
+          },
+          boxShadow: {
+            soft: '0 12px 30px rgba(0,0,0,0.08)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-bg text-slate-900">
+
+<!-- TOP NAV -->
+<div class="fixed top-0 left-0 right-0 h-16 bg-white shadow-soft flex items-center justify-between px-6 z-40">
+  <div class="flex items-center gap-3 font-semibold">
+    <i class="fa-solid fa-recycle text-primary"></i>
+    <span>Smart Waste</span>
+  </div>
+
+  <div class="hidden md:block text-sm text-muted">
+    Household Compliance Dashboard
+  </div>
+
+  <button onclick="toggleProfile()">
+    <i class="fa fa-user-circle text-2xl text-primary"></i>
+  </button>
+</div>
+
+<!-- SIDEBAR -->
+<div class="fixed top-16 left-0 bottom-0 w-60 bg-white border-r">
+  <nav class="mt-6 px-3 space-y-1">
+    <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary font-medium">
+      <i class="fa fa-chart-line"></i> Dashboard
+    </a>
+    <a href="/user/awareness"
+       class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted hover:bg-slate-100">
+      <i class="fa fa-leaf"></i> Awareness
+    </a>
+  </nav>
+</div>
+
+<!-- MAIN -->
+<div class="ml-60 pt-20 p-8">
+
+  <!-- KPI GRID -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
+    {% for title, value, color, note in [
+      ('Picked Days', picked_days, 'text-success', 'Last 30 days'),
+      ('Missed Days', missed_days, 'text-danger', 'Auto after day passes'),
+      ('Compliance', compliance ~ '%', '', 'Rolling 30-day rate'),
+      ('Miss Streak', user.miss_streak, 'text-amber-500', 'Consecutive misses')
+    ] %}
+    <div class="bg-card rounded-2xl p-6 shadow-soft hover:-translate-y-1 transition">
+      <p class="text-sm text-muted">{{ title }}</p>
+      <p class="text-3xl font-bold {{ color }}">{{ value }}</p>
+      <p class="text-xs text-muted mt-1">{{ note }}</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- CONTENT -->
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+
+    <!-- DONUT -->
+    <div class="bg-card rounded-2xl p-6 shadow-soft">
+      <p class="font-medium mb-4">Pickup Distribution</p>
+      <canvas id="donut" height="160"></canvas>
+      <p class="text-xs text-muted mt-4 text-center">
+        Compliance breakdown (30 days)
+      </p>
+    </div>
+
+    <!-- CALENDAR + SKIP -->
+    <div class="xl:col-span-2 bg-card rounded-2xl p-6 shadow-soft">
+      <p class="font-medium mb-4">30-Day Pickup Calendar</p>
+
+      <!-- LEGEND -->
+      <div class="flex flex-wrap gap-4 text-xs text-muted mb-4">
+        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-success"></span> Picked</span>
+        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-danger"></span> Missed</span>
+        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-skip"></span> Informed Skip</span>
+        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded border-2 border-info"></span> Today</span>
+      </div>
+
+      <!-- CALENDAR GRID -->
+      <div class="grid grid-cols-7 gap-3 mb-8">
+        {% for d in calendar %}
+          <div
+            class="h-12 rounded-xl flex items-center justify-center text-sm font-semibold transition hover:scale-105
+            {% if d.status == 'picked' %} bg-success text-white
+            {% elif d.status == 'missed' %} bg-danger text-white
+            {% elif d.status == 'skip' %} bg-skip text-black
+            {% elif d.status == 'today' %} bg-white text-info border-2 border-info
+            {% endif %}"
+            title="{{ d.full_date }} · {{ d.status|capitalize }}"
+          >
+            {{ d.day }}
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- 🟡 PLANNED SKIP DAYS -->
+      <div class="border-t pt-6">
+        <p class="font-medium mb-3">Plan Skip Day (No Fine)</p>
+
+        <div class="flex flex-col md:flex-row gap-4 items-start md:items-end">
+          <div>
+            <label class="text-xs text-muted block mb-1">Select future date</label>
+            <input
+              type="date"
+              id="skipDate"
+              min="{{ calendar[-1].date }}"
+              class="border rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary"
+            />
+          </div>
+
+          <button
+            onclick="submitSkipDay()"
+            class="bg-primary text-white px-5 py-2 rounded-xl hover:bg-teal-600 transition"
+          >
+            Mark as Skip Day
+          </button>
+        </div>
+
+        <p class="text-xs text-muted mt-3">
+          Informing in advance prevents fines for that day.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profile" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+  <div class="bg-white rounded-2xl p-6 w-[420px] shadow-soft">
+    <h3 class="font-semibold mb-4">Profile</h3>
+
+    <div class="grid grid-cols-2 gap-y-3 text-sm">
+      <span class="text-muted">Name</span><span>{{ user.name }}</span>
+      <span class="text-muted">Email</span><span>{{ user.email }}</span>
+      <span class="text-muted">RFID</span><span>{{ user.rfid }}</span>
+      <span class="text-muted">Sector</span><span>{{ user.sector }}</span>
+      <span class="text-muted">Society</span><span>{{ user.society }}</span>
+    </div>
+
+    <a href="/logout" class="block mt-6 text-center text-danger font-medium">
+      Logout
+    </a>
+  </div>
+</div>
+
+<script>
+function toggleProfile(){
+  document.getElementById("profile").classList.toggle("hidden")
+}
+
+function submitSkipDay(){
+  const date = document.getElementById("skipDate").value
+  if(!date){ alert("Please select a future date"); return }
+
+  fetch("/api/skip-day", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      rfid: "{{ user.rfid }}",
+      date: date
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message || "Skip day added")
+    location.reload()
+  })
+}
+
+new Chart(document.getElementById("donut"),{
+  type:"doughnut",
+  data:{
+    labels:["Picked","Missed"],
+    datasets:[{
+      data:[{{ picked_days }}, {{ missed_days }}],
+      backgroundColor:["#22c55e","#ef4444"]
+    }]
+  },
+  options:{ cutout:"75%", plugins:{legend:{display:false}} }
+});
+</script>
+
+</body>
+</html>

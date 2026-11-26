@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fines & Rewards • Smart Waste</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#f8fafc',
+            primary: '#0ea5a4',
+            secondary: '#38bdf8',
+            accent: '#f59e0b',
+            success: '#22c55e',
+            danger: '#ef4444',
+            muted: '#64748b',
+            card: 'rgba(255,255,255,0.9)'
+          },
+          boxShadow: {
+            soft: '0 12px 30px rgba(0,0,0,0.08)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-bg text-slate-900">
+
+<!-- TOP NAVBAR -->
+<div class="fixed top-0 left-0 right-0 h-16 bg-white shadow-soft flex items-center justify-between px-6 z-40">
+  <div class="flex items-center gap-3 font-semibold">
+    <i class="fa-solid fa-recycle text-primary"></i>
+    <span>Smart Waste • Admin</span>
+  </div>
+
+  <div class="flex items-center gap-5">
+    <span class="text-sm text-muted">System Control Panel</span>
+    <a href="/logout" class="text-danger font-medium">Logout</a>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="fixed top-16 left-0 bottom-0 w-60 bg-white border-r border-slate-200">
+  <nav class="mt-6 space-y-1 px-3">
+
+    <a href="/admin"
+       class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted hover:bg-slate-100">
+      <i class="fa fa-chart-pie"></i>
+      <span>Dashboard</span>
+    </a>
+
+    <a href="/admin/fines"
+       class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary font-medium">
+      <i class="fa fa-scale-balanced"></i>
+      <span>Fines & Rewards</span>
+    </a>
+
+  </nav>
+</div>
+
+<!-- MAIN -->
+<div class="ml-60 pt-20 p-8">
+
+  <!-- HEADER -->
+  <div class="mb-6">
+    <h1 class="text-xl font-semibold">Fines & Rewards</h1>
+    <p class="text-sm text-muted">
+      Compliance-based penalties and incentives for registered households
+    </p>
+  </div>
+
+  <!-- TABLE CARD -->
+  <div class="bg-card rounded-2xl shadow-soft overflow-x-auto">
+
+    <table class="min-w-full text-sm">
+      <thead class="bg-slate-100 text-muted">
+        <tr>
+          <th class="px-5 py-4 text-left">Household</th>
+          <th class="px-5 py-4">RFID</th>
+          <th class="px-5 py-4">Sector</th>
+          <th class="px-5 py-4">Society</th>
+          <th class="px-5 py-4">Miss Streak</th>
+          <th class="px-5 py-4">Fine (₹)</th>
+          <th class="px-5 py-4">Reward (₹)</th>
+          <th class="px-5 py-4">Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for u in users %}
+        <tr class="border-b hover:bg-slate-50 transition">
+
+          <td class="px-5 py-4 font-medium">
+            {{ u.name }}
+          </td>
+
+          <td class="px-5 py-4 text-xs text-muted">
+            {{ u.rfid }}
+          </td>
+
+          <td class="px-5 py-4">
+            {{ u.sector }}
+          </td>
+
+          <td class="px-5 py-4">
+            {{ u.society }}
+          </td>
+
+          <td class="px-5 py-4 text-center font-semibold">
+            {{ u.miss_streak }}
+          </td>
+
+          <td class="px-5 py-4 text-center">
+            {% if u.fine %}
+              <span class="text-danger font-semibold">₹100</span>
+            {% else %}
+              ₹0
+            {% endif %}
+          </td>
+
+          <td class="px-5 py-4 text-center">
+            {% if u.reward %}
+              <span class="text-success font-semibold">₹50</span>
+            {% else %}
+              ₹0
+            {% endif %}
+          </td>
+
+          <td class="px-5 py-4 text-center">
+            {% if u.fine %}
+              <span class="px-3 py-1 rounded-full bg-red-100 text-danger text-xs font-medium">
+                Fine
+              </span>
+            {% elif u.reward %}
+              <span class="px-3 py-1 rounded-full bg-green-100 text-success text-xs font-medium">
+                Reward
+              </span>
+            {% else %}
+              <span class="px-3 py-1 rounded-full bg-slate-100 text-muted text-xs">
+                Normal
+              </span>
+            {% endif %}
+          </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+
+</div>
+
+</body>
+</html>

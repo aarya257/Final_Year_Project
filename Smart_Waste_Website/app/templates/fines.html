@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fines & Rewards</title>
+</head>
+<body>
+
+<h2>Fines & Rewards Dashboard</h2>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>Name</th>
+        <th>RFID</th>
+        <th>Miss Streak</th>
+        <th>Picked Days</th>
+        <th>Status</th>
+    </tr>
+
+    {% for user in records %}
+    <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.rfid }}</td>
+        <td>{{ user.miss_streak }}</td>
+        <td>{{ user.picked_days }}</td>
+        <td>
+            {% if user.fine %}
+                Fine ⚠️
+            {% endif %}
+            {% if user.reward %}
+                Reward 🎉
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+</body>
+</html>

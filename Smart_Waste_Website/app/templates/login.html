@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login • Smart Waste</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#f8fafc',
+            primary: '#0ea5a4',
+            muted: '#64748b',
+            card: 'rgba(255,255,255,0.95)'
+          },
+          boxShadow: {
+            soft: '0 20px 45px rgba(0,0,0,0.12)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-bg flex items-center justify-center min-h-screen">
+
+<div class="w-full max-w-md bg-card rounded-2xl shadow-soft p-8">
+
+  <!-- BRAND -->
+  <div class="text-center mb-6">
+    <i class="fa-solid fa-recycle text-primary text-3xl mb-2"></i>
+    <h1 class="text-xl font-semibold">Smart Waste</h1>
+    <p class="text-sm text-muted">RFID Waste Compliance System</p>
+  </div>
+
+  <!-- FORM -->
+  <form method="post" action="/login" class="space-y-5">
+    <div>
+      <label class="text-sm text-muted">Email</label>
+      <input name="email" type="email" required
+        class="w-full mt-1 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-primary">
+    </div>
+
+    <div>
+      <label class="text-sm text-muted">Password</label>
+      <input name="password" type="password" required
+        class="w-full mt-1 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-primary">
+    </div>
+
+    <button class="w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-teal-600 transition">
+      Login
+    </button>
+  </form>
+
+  <!-- FOOTER -->
+  <div class="text-center text-sm text-muted mt-6">
+    Don’t have an account?
+    <a href="/signup" class="text-primary font-medium">Create one</a>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Waste Awareness • Smart Waste</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#f8fafc',
+            primary: '#0ea5a4',
+            success: '#22c55e',
+            warning: '#f59e0b',
+            danger: '#ef4444',
+            muted: '#64748b',
+            card: 'rgba(255,255,255,0.95)'
+          },
+          boxShadow: {
+            soft: '0 12px 30px rgba(0,0,0,0.08)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-bg text-slate-900">
+
+<!-- TOP NAV -->
+<div class="fixed top-0 left-0 right-0 h-16 bg-white shadow-soft flex items-center justify-between px-6 z-40">
+  <div class="flex items-center gap-3 font-semibold">
+    <i class="fa-solid fa-recycle text-primary"></i>
+    <span>Smart Waste</span>
+  </div>
+
+  <a href="/user" class="text-sm text-primary font-medium">
+    ← Back to Dashboard
+  </a>
+</div>
+
+<!-- MAIN -->
+<div class="pt-24 px-6 max-w-6xl mx-auto">
+
+  <!-- HEADER -->
+  <div class="text-center mb-14">
+    <h1 class="text-3xl font-bold mb-3">Waste Awareness & Responsibility</h1>
+    <p class="text-muted max-w-2xl mx-auto">
+      Small daily actions at home can lead to massive environmental impact.
+      Learn how your role as a citizen contributes to a cleaner, smarter city.
+    </p>
+  </div>
+
+  <!-- WHY IT MATTERS -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-14">
+    <div class="bg-card p-6 rounded-2xl shadow-soft text-center">
+      <i class="fa fa-earth-asia text-3xl text-success mb-4"></i>
+      <h3 class="font-semibold mb-2">Protect Environment</h3>
+      <p class="text-sm text-muted">
+        Proper waste handling reduces pollution, landfill overflow, and climate damage.
+      </p>
+    </div>
+
+    <div class="bg-card p-6 rounded-2xl shadow-soft text-center">
+      <i class="fa fa-heart-pulse text-3xl text-danger mb-4"></i>
+      <h3 class="font-semibold mb-2">Public Health</h3>
+      <p class="text-sm text-muted">
+        Clean surroundings prevent diseases caused by pests and waste accumulation.
+      </p>
+    </div>
+
+    <div class="bg-card p-6 rounded-2xl shadow-soft text-center">
+      <i class="fa fa-city text-3xl text-primary mb-4"></i>
+      <h3 class="font-semibold mb-2">Smart Cities</h3>
+      <p class="text-sm text-muted">
+        Digital waste tracking enables efficient collection and better planning.
+      </p>
+    </div>
+  </div>
+
+  <!-- DO & DON'T -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-14">
+    <div class="bg-card p-6 rounded-2xl shadow-soft">
+      <h3 class="font-semibold mb-4 text-success">
+        <i class="fa fa-check-circle mr-2"></i> Do These
+      </h3>
+      <ul class="space-y-3 text-sm text-muted">
+        <li>✔ Hand over waste daily to the collection vehicle</li>
+        <li>✔ Keep waste securely packed</li>
+        <li>✔ Follow pickup schedules</li>
+        <li>✔ Encourage neighbors to comply</li>
+      </ul>
+    </div>
+
+    <div class="bg-card p-6 rounded-2xl shadow-soft">
+      <h3 class="font-semibold mb-4 text-danger">
+        <i class="fa fa-times-circle mr-2"></i> Avoid These
+      </h3>
+      <ul class="space-y-3 text-sm text-muted">
+        <li>✘ Dumping waste in open areas</li>
+        <li>✘ Skipping daily disposal</li>
+        <li>✘ Throwing waste after pickup</li>
+        <li>✘ Burning household waste</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DAILY HABITS -->
+  <div class="bg-card p-8 rounded-2xl shadow-soft mb-14">
+    <h3 class="font-semibold mb-4">
+      <i class="fa fa-list-check mr-2 text-primary"></i>
+      Simple Daily Habits
+    </h3>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-muted">
+      <div>• Be ready before pickup time</div>
+      <div>• Track your dashboard regularly</div>
+      <div>• Aim for zero missed days</div>
+      <div>• Treat waste disposal as a civic duty</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-14 text-center">
+    <div class="bg-card p-6 rounded-2xl shadow-soft">
+      <p class="text-3xl font-bold text-primary">30%</p>
+      <p class="text-sm text-muted mt-2">Waste reduction possible with regular collection</p>
+    </div>
+
+    <div class="bg-card p-6 rounded-2xl shadow-soft">
+      <p class="text-3xl font-bold text-success">100%</p>
+      <p class="text-sm text-muted mt-2">Compliance earns rewards</p>
+    </div>
+
+    <div class="bg-card p-6 rounded-2xl shadow-soft">
+      <p class="text-3xl font-bold text-danger">3 Days</p>
+      <p class="text-sm text-muted mt-2">Consecutive misses trigger fines</p>
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="text-center text-muted italic mb-10">
+    “Waste is only waste if we waste it.”
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard • Smart Waste</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              bg: "#f8fafc",
+              primary: "#0ea5a4",
+              secondary: "#38bdf8",
+              accent: "#f59e0b",
+              success: "#22c55e",
+              danger: "#ef4444",
+              muted: "#64748b",
+              card: "rgba(255,255,255,0.9)",
+            },
+            boxShadow: {
+              soft: "0 12px 30px rgba(0,0,0,0.08)",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body class="bg-bg text-slate-900">
+    <!-- TOP NAVBAR -->
+    <div
+      class="fixed top-0 left-0 right-0 h-16 bg-white shadow-soft flex items-center justify-between px-6 z-40"
+    >
+      <div class="flex items-center gap-3 font-semibold">
+        <i class="fa-solid fa-recycle text-primary"></i>
+        <span>Smart Waste • Admin</span>
+      </div>
+
+      <div class="flex items-center gap-5">
+        <span class="text-sm text-muted">System Control Panel</span>
+        <a href="/logout" class="text-danger font-medium">Logout</a>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div
+      class="fixed top-16 left-0 bottom-0 w-60 bg-white border-r border-slate-200"
+    >
+      <nav class="mt-6 space-y-1 px-3">
+        <a
+          href="/admin"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary font-medium"
+        >
+          <i class="fa fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a
+          href="/admin/fines"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted hover:bg-slate-100"
+        >
+          <i class="fa fa-scale-balanced"></i>
+          <span>Fines & Rewards</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- MAIN -->
+    <div class="ml-60 pt-20 p-8">
+      <!-- KPI GRID -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
+        <div class="bg-card rounded-2xl p-6 shadow-soft">
+          <p class="text-sm text-muted">Total Households</p>
+          <p class="text-3xl font-bold">{{ total_users }}</p>
+          <p class="text-xs text-muted mt-1">Registered users</p>
+        </div>
+
+        <div class="bg-card rounded-2xl p-6 shadow-soft">
+          <p class="text-sm text-muted">Active Sectors</p>
+          <p class="text-3xl font-bold">{{ sector_waste | length }}</p>
+          <p class="text-xs text-muted mt-1">Waste reporting zones</p>
+        </div>
+
+        <div class="bg-card rounded-2xl p-6 shadow-soft">
+          <p class="text-sm text-muted">Total Waste Logged</p>
+          <p class="text-3xl font-bold text-success">
+            {{ sector_waste | sum(attribute=1) | round(1) }} kg
+          </p>
+          <p class="text-xs text-muted mt-1">All sectors combined</p>
+        </div>
+
+        <div class="bg-card rounded-2xl p-6 shadow-soft">
+          <p class="text-sm text-muted">System Status</p>
+          <p class="text-3xl font-bold text-success">Operational</p>
+          <p class="text-xs text-muted mt-1">No critical alerts</p>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
+        <!-- TREND -->
+        <div class="bg-card rounded-2xl p-6 shadow-soft">
+          <p class="font-medium mb-3">Daily Pickup Trend</p>
+          <canvas id="trendChart" height="140"></canvas>
+          <p class="text-xs text-muted mt-3">
+            Number of households successfully serviced per day
+          </p>
+        </div>
+
+        <!-- SECTOR -->
+        <div class="bg-card rounded-2xl p-6 shadow-soft">
+          <p class="font-medium mb-3">Sector-wise Waste (kg)</p>
+          <canvas id="sectorChart" height="140"></canvas>
+          <p class="text-xs text-muted mt-3">
+            Manually logged waste by collection zone
+          </p>
+        </div>
+      </div>
+
+      <!-- ADD WASTE -->
+      <div class="bg-card rounded-2xl p-6 shadow-soft">
+        <p class="font-medium mb-4">Add Daily Sector Waste</p>
+        <form
+          method="post"
+          action="/admin/add-waste"
+          class="grid grid-cols-1 md:grid-cols-4 gap-4"
+        >
+          <input
+            name="sector"
+            placeholder="Sector (A / B / C)"
+            required
+            class="border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <input
+            name="wet"
+            type="number"
+            step="0.1"
+            placeholder="Wet Waste (kg)"
+            required
+            class="border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
+            name="dry"
+            type="number"
+            step="0.1"
+            placeholder="Dry Waste (kg)"
+            required
+            class="border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            class="bg-primary text-white rounded-xl px-4 py-3 hover:bg-teal-600 transition"
+          >
+            Add Waste Data
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      /* ---------------- TREND (UNCHANGED) ---------------- */
+      new Chart(document.getElementById("trendChart"), {
+        type: "line",
+        data: {
+          labels: {{ trend | map(attribute="date") | list | safe }},
+          datasets: [{
+            label: "Households Picked",
+            data: {{ trend | map(attribute="count") | list | safe }},
+            borderColor: "#0ea5a4",
+            backgroundColor: "rgba(14,165,164,0.15)",
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      /* ---------------- STACKED SECTOR WASTE ---------------- */
+      new Chart(document.getElementById("sectorChart"), {
+        type: "bar",
+        data: {
+          labels: {{ sector_waste | map(attribute=0) | list | safe }},
+          datasets: [
+            {
+              label: "Wet Waste (kg)",
+              data: {{ sector_waste | map(attribute=1) | list | safe }},
+              backgroundColor: "#22c55e"
+            },
+            {
+              label: "Dry Waste (kg)",
+              data: {{ sector_waste | map(attribute=2) | list | safe }},
+              backgroundColor: "#3b82f6"
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "bottom"
+            },
+            tooltip: {
+              mode: "index",
+              intersect: false
+            }
+          },
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: true,
+              title: {
+                display: true,
+                text: "Waste (kg)"
+              }
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
